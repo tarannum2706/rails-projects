@@ -1,0 +1,45 @@
+<div id="<%= dom_id post %>">
+  <p>
+    <strong>Title:</strong>
+    <%= post.title %>
+  </p>
+
+  <p>
+    <strong>Body:</strong>
+    <%= post.body %>
+  </p>
+
+  <div>
+    <%= link_to "Edit", edit_post_path(@post) %> |
+    <%= link_to "Back", posts_path %>
+  </div>
+<br/>
+<%= @post.likes.count%> Likes <br/>
+<% if current_user.likes.find_by(post: @post).nil? %>
+  <div class="container-fluid">
+  <form action="/likes" method="post">
+    <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+    <input type="hidden" name="like[post_id]" value="<%= @post.id %>">
+    <input type = "submit" value="Like" class = 'btn btn-outline-warning btn-sm'>
+    </form>
+    </div>
+    <% else %>
+    <div class="container-fluid">
+    <form action="<%= likes_path(@like) %>" method="post">
+      <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+      <input type="hidden" name="_method" value="Delete">
+      <input type = "submit" value="Unlike" class = 'btn btn-outline-warning btn-sm'>
+      </form>
+      </div>
+    <% end %>
+<br/>
+  <p>
+    <strong>Comments :</strong>
+      <%= render partial: 'comments/form', locals:{post: @post} %>
+      <%= render @post.comments.order(id: :desc) %>
+  </p>
+  <br>
+
+  <br/>
+  <br/>
+</div>
